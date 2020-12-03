@@ -13,13 +13,10 @@ def count_trees_in_path(data, over, down):
     y = 0
     trees = 0
     while y < max_y:
-        try:
-            if data[y][x] == '#':
-                trees += 1
-            x = (x + over) % max_x
-            y += down
-        except IndexError:
-            print('index error! ({}, {})'.format(x, y))
+        if data[y][x] == '#':
+            trees += 1
+        x = (x + over) % max_x
+        y += down
     return trees
 
 
