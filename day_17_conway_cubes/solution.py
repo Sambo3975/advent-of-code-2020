@@ -4,7 +4,7 @@ from copy import copy, deepcopy
 class MagicGrid:
     """An "infinite" n-dimensional grid"""
 
-    def __init__(self, other=None, dimensionality=2, fill=None):
+    def __init__(self, other=None, dimensionality=2, fill=' '):
         """
         Constructor
         :param other: The MagicGrid to copy. If this is set, all other parameters will be ignored.
@@ -25,21 +25,43 @@ class MagicGrid:
             self.fill = fill
             
     def __repr__(self):
-        if self.__dimensionality not in (3, 4):
-            raise NotImplementedError(f"String representation of {self.__dimensionality}-dimensional MagicGrid not "
-                                      f"implemented.")
-        ext = self.__extents
+        dim = self.__dimensionality
+        if dim > 4:
+            raise NotImplementedError(f"String representation of {dim}-dimensional MagicGrid not implemented.")
+
+        ranges = []
+        for i in range(4):
+            if 4 - i <= dim:
+                print(i)
+                ranges.append(self.get_dimensional_range(3 - i))
+            else:
+                ranges.append(range(1))
+
+        print(ranges)
+
         string = ''
-        for z in self.get_dimensional_range(0):
-            string += f"\nz={z}"
-            for y in self.get_dimensional_range(1):
-                string += '\n'
-                for x in self.get_dimensional_range(2):
-                    if (z, y, x) in self:
-                        string += self[z, y, x]
-                    else:
-                        string += self.fill
-            string += '\n'
+        for w in ranges[0]:
+            for z in ranges[1]:
+                if dim >= 3:
+                    string += f"\nz={z}"
+                if dim == 4:
+                    string += f", w={w}"
+                for y in ranges[2]:
+                    if dim >= 2:
+                        string += '\n'
+                    for x in ranges[3]:
+                        if (w, z, y, x) in self:
+                            string += self[w, z, y, x]
+                        elif (z, y, x) in self:
+                            string += self[z, y, x]
+                        elif (y, x) in self:
+                            string += self[y, x]
+                        elif x in self:
+                            return self[x]
+                        else:
+                            string += self.fill
+                if dim >= 3:
+                    string += '\n'
 
         return string
 
@@ -80,9 +102,13 @@ class MagicGrid:
                 
     def __update_extents(self, key):
         ext = self.__extents
-        for i in range(self.__dimensionality):
-            ext[i][0] = min(key[i], ext[i][0])
-            ext[i][1] = max(key[i], ext[i][1])
+        if self.__dimensionality == 1:
+            ext[0][0] = min(key, ext[0][0])
+            ext[0][0] = min(key, ext[0][1])
+        else:
+            for i in range(self.__dimensionality):
+                ext[i][0] = min(key[i], ext[i][0])
+                ext[i][1] = max(key[i], ext[i][1])
 
     def get_dimensional_length(self, dim):
         if isinstance(dim, int) and 0 <= dim < self.__dimensionality:
@@ -183,7 +209,11 @@ def iterate_grid(grid, steps, verbose=False):
 
 
 if __name__ == '__main__':
-    conway_grid = parse_file('test.txt', 3)
-    conway_grid = iterate_grid(conway_grid, 1, verbose=True)
-    print(f"Final active count: {len(conway_grid)}")
+    # conway_grid = parse_file('test.txt', 3)
+    # conway_grid = iterate_grid(conway_grid, 1, verbose=True)
+    # print(f"Final active count: {len(conway_grid)}")
+    grid1 = MagicGrid(dimensionality=1, fill='.')
+    grid1[-1] = '#'
+    grid1[2] = '#'
+    print(grid1)
 

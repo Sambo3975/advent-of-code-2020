@@ -1,0 +1,16 @@
+// Grammar for a basic calculator only supporting addition and multiplication. Operators all have the same precedence
+// and are simply computed left-to-right. Parenthesis still have the highest precedence. Based on the Lark beginner
+// tutorial.
+start: expr
+
+expr: token
+    | token OP token
+    | expr OP token  // Switching expr and token makes it compute right-to-left
+
+token: INT
+    | "(" expr ")"
+
+%import common.INT
+OP: "+" | "*"
+SPACE: " "
+%ignore SPACE

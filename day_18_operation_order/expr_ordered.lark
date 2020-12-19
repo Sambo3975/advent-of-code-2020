@@ -1,0 +1,18 @@
+?start: product
+
+// The '-> mul' bit allows us to add a variable 'mul' to the parser's Transformer containing the '*' operator, which
+// will then be called during parsing to replace something like 5 '*' 3 with the result (in this case 15). See the
+// class definition of CalculateTree in part_2.py to get a full view of how this is set up.
+?product: sum
+        | product "*" sum  -> mul // If the part of the string being parsed matches this rule, its parent Tree will have 'mul' as its data field.
+
+?sum: atom
+    | sum "+" atom         -> add  // replace lhs '+' rhs with its result
+
+?atom: INT                 -> number  // replace a string representation of an integer with an actual integer.
+     | "(" product ")"
+
+%import common.INT
+%import common.WS_INLINE
+
+%ignore WS_INLINE
