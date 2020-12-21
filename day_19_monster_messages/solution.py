@@ -55,5 +55,5 @@ if __name__ == '__main__':
 
     # This is about 3.5 seconds faster than without multiprocessing.
     # That makes sense, because the parse without substitution takes about the same amount of time.
-    # I tested this on my Ryzen 3700x, which has 8 cores (16 threads)
+    # I tested this on my Ryzen 7 3700x, which has 8 cores (16 threads)
     print(f"\nFinished after {time.time() - start} seconds")

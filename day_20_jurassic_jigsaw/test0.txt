@@ -1,0 +1,44 @@
+Tile 0000:
+xoo
+xox
+xxx
+
+Tile 0001:
+xoo
++o+
+o+o
+
+Tile 0002:
+o+x
++oo
+o+o
+
+Tile 0003:
+o+o
++o+
+oox
+
+Tile 0004:
+o+o
+oo+
+x+o
+
+Tile 0005:
+oox
++o+
+o+o
+
+Tile 0006:
+o+o
++oo
+o+x
+
+Tile 0007:
+o+o
++o+
+xoo
+
+Tile 0008:
+x+o
+oo+
+o+o

@@ -1,0 +1,44 @@
+Obek 0000:
+ooo
+o0x
+oxx
+
+Gorm 0001:
+ooo
+x1x
+xxx
+
+Imot 0002:
+ooo
+x2o
+cco
+
+Gila 0003:
+oxx
+o3x
+oxx
+
+Fall 0004:
+xxx
+x4x
+xxx
+
+Iona 0005:
+xxo
+x5o
+xxo
+
+Fert 0006:
+oxx
+o6x
+ooo
+
+Conf 0007:
+xxx
+x7x
+ooo
+
+Sent 0008:
+xxo
+x8o
+ooo
