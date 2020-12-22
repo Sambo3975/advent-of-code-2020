@@ -29,15 +29,9 @@ class MagicGrid:
         if dim > 4:
             raise NotImplementedError(f"String representation of {dim}-dimensional MagicGrid not implemented.")
 
-        ranges = []
-        for i in range(4):
-            if 4 - i <= dim:
-                print(i)
-                ranges.append(self.get_dimensional_range(3 - i))
-            else:
-                ranges.append(range(1))
-
-        print(ranges)
+        ranges = [range(1)] * 4
+        for i in range(dim):
+            ranges[3 - i] = self.get_dimensional_range(dim - 1 - i)
 
         string = ''
         for w in ranges[0]:
@@ -57,7 +51,7 @@ class MagicGrid:
                         elif (y, x) in self:
                             string += self[y, x]
                         elif x in self:
-                            return self[x]
+                            string += self[x]
                         else:
                             string += self.fill
                 if dim >= 3:
@@ -72,6 +66,7 @@ class MagicGrid:
         return self.fill
 
     def __setitem__(self, key, value):
+        # print(f"Setting key {key} to {value}")
         self.__validate_index(key)
         if value is not None:
             self.__update_extents(key)
@@ -88,7 +83,7 @@ class MagicGrid:
     def __contains__(self, item):
         return item in self.__data
 
-    def __validate_index(self, index):
+    def __validate_index(self, index: object):
         if self.__dimensionality == 1:
             if not isinstance(index, int):
                 raise IndexError("Invalid index structure or type. Must be an int.")
@@ -102,13 +97,15 @@ class MagicGrid:
                 
     def __update_extents(self, key):
         ext = self.__extents
+        # print(f"Updating extents for key {key}")
         if self.__dimensionality == 1:
             ext[0][0] = min(key, ext[0][0])
-            ext[0][0] = min(key, ext[0][1])
+            ext[0][1] = max(key, ext[0][1])
         else:
             for i in range(self.__dimensionality):
                 ext[i][0] = min(key[i], ext[i][0])
                 ext[i][1] = max(key[i], ext[i][1])
+            # print(ext)
 
     def get_dimensional_length(self, dim):
         if isinstance(dim, int) and 0 <= dim < self.__dimensionality:
@@ -127,6 +124,9 @@ class MagicGrid:
     def get_dimensionality(self):
         return self.__dimensionality
 
+    def get_contents(self):
+        return self.__data
+
 
 def parse_file(file_name, dim=3):
     with open(file_name) as f:
@@ -143,15 +143,15 @@ def parse_file(file_name, dim=3):
 
 
 def get_next_state_cube(z, y, x, current_state, w=None):
-    alive = (z, y, x) in current_state
+    if w is None:
+        alive = (z, y, x) in current_state
+        w_range = range(1)
+    else:
+        alive = (w, z, y, x) in current_state
+        w_range = range(w-1, w+2)
 
     # If the cube is alive, it shouldn't be counted as its own living neighbor
     living_adjacent_count = -1 if alive else 0
-
-    if w is not None:
-        w_range = range(w-1, w+2)
-    else:
-        w_range = range(1)
 
     for cw in w_range:
         for cz in range(z-1, z+2):
@@ -159,9 +159,6 @@ def get_next_state_cube(z, y, x, current_state, w=None):
                 for cx in range(x-1, x+2):
                     if (w is None and (cz, cy, cx) in current_state) or (cw, cz, cy, cx) in current_state:
                         living_adjacent_count += 1
-                    if w == 0 and z == 0 and y == 0 and x == 0 and cz == 0 and cw == 0:
-                        print(cx, cy, cz, cw)
-                        print(current_state[cw, cz, cy, cx])
 
     if alive and living_adjacent_count < 2 or living_adjacent_count > 3:
         return False
@@ -209,11 +206,7 @@ def iterate_grid(grid, steps, verbose=False):
 
 
 if __name__ == '__main__':
-    # conway_grid = parse_file('test.txt', 3)
-    # conway_grid = iterate_grid(conway_grid, 1, verbose=True)
-    # print(f"Final active count: {len(conway_grid)}")
-    grid1 = MagicGrid(dimensionality=1, fill='.')
-    grid1[-1] = '#'
-    grid1[2] = '#'
-    print(grid1)
-
+    for i in (3, 4):
+        conway_grid = parse_file('test.txt', i)
+        conway_grid = iterate_grid(conway_grid, 6)
+        print(f"Final active count in {i} dimensions: {len(conway_grid)}")
